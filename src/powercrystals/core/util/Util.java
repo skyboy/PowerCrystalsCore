@@ -27,6 +27,7 @@ public class Util
 			{
 				return true;
 			}
+			bp.free();
 		}
 		return false;
 	}

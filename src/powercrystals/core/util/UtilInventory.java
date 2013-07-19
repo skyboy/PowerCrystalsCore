@@ -38,7 +38,7 @@ public abstract class UtilInventory
 		Map<ForgeDirection, IPipeEntry> pipes = new LinkedHashMap<ForgeDirection, IPipeEntry>();
 		for(ForgeDirection direction : directionstocheck)
 		{
-			BlockPosition bp = new BlockPosition(x, y, z);
+			BlockPosition bp = BlockPosition.create().from(x, y, z);
 			bp.orientation = direction;
 			bp.moveForwards(1);
 			TileEntity te = world.getBlockTileEntity(bp.x, bp.y, bp.z);
@@ -46,6 +46,7 @@ public abstract class UtilInventory
 			{
 				pipes.put(direction, (IPipeEntry)te);
 			}
+			bp.free();
 		}
 		return pipes;
 	}
@@ -68,7 +69,7 @@ public abstract class UtilInventory
 		Map<ForgeDirection, IInventory> chests = new LinkedHashMap<ForgeDirection, IInventory>();
 		for(ForgeDirection direction : directionstocheck)
 		{
-			BlockPosition bp = new BlockPosition(x, y, z);
+			BlockPosition bp = BlockPosition.create().from(x, y, z);
 			bp.orientation = direction;
 			bp.moveForwards(1);
 			TileEntity te = world.getBlockTileEntity(bp.x, bp.y, bp.z);
@@ -76,6 +77,7 @@ public abstract class UtilInventory
 			{
 				chests.put(direction, checkForDoubleChest(world, te, bp));
 			}
+			bp.free();
 		}
 		return chests;
 	}
@@ -90,6 +92,7 @@ public abstract class UtilInventory
 				{
 					return new InventoryLargeChest("Large Chest", ((IInventory)te), ((IInventory)world.getBlockTileEntity(bp.x, bp.y, bp.z)));
 				}
+				bp.free();
 			}
 		}
 		return ((IInventory)te);
@@ -102,7 +105,7 @@ public abstract class UtilInventory
 	 */
 	public static ItemStack dropStack(TileEntity from, ItemStack stack)
 	{
-		return dropStack(from.worldObj, new BlockPosition(from.xCoord, from.yCoord, from.zCoord), stack, ForgeDirection.VALID_DIRECTIONS, ForgeDirection.UNKNOWN);
+		return dropStack(from, stack, ForgeDirection.VALID_DIRECTIONS, ForgeDirection.UNKNOWN);
 	}
 
 	/**
@@ -113,7 +116,7 @@ public abstract class UtilInventory
 	 */
 	public static ItemStack dropStack(TileEntity from, ItemStack stack, ForgeDirection airdropdirection)
 	{
-		return dropStack(from.worldObj, new BlockPosition(from.xCoord, from.yCoord, from.zCoord), stack, ForgeDirection.VALID_DIRECTIONS, airdropdirection);
+		return dropStack(from, stack, ForgeDirection.VALID_DIRECTIONS, airdropdirection);
 	}
 	
 	/**
@@ -126,7 +129,7 @@ public abstract class UtilInventory
 	public static ItemStack dropStack(TileEntity from, ItemStack stack, ForgeDirection dropdirection, ForgeDirection airdropdirection)
 	{
 		ForgeDirection[] dropdirections = {dropdirection};
-		return dropStack(from.worldObj, new BlockPosition(from.xCoord, from.yCoord, from.zCoord), stack, dropdirections, airdropdirection);
+		return dropStack(from, stack, dropdirections, airdropdirection);
 	}
 	
 	/**
@@ -139,7 +142,10 @@ public abstract class UtilInventory
 	 */
 	public static ItemStack dropStack(TileEntity from, ItemStack stack, ForgeDirection[] dropdirections, ForgeDirection airdropdirection)
 	{
-		return dropStack(from.worldObj, new BlockPosition(from.xCoord, from.yCoord, from.zCoord), stack, dropdirections, airdropdirection);
+		BlockPosition bp = BlockPosition.create().from(from.xCoord, from.yCoord, from.zCoord);
+		ItemStack drop = dropStack(from.worldObj, bp, stack, dropdirections, airdropdirection);
+		bp.free();
+		return drop;
 	}
 	
 	/**
