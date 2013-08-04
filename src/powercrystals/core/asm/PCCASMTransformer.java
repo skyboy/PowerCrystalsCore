@@ -75,6 +75,15 @@ public class PCCASMTransformer implements IClassTransformer
 		name = name.replace('.', '/');
 		ClassNode cn = new ClassNode(Opcodes.ASM4);
 		cr.accept(cn, ClassReader.EXPAND_FRAMES);
+		String sig = "(Lnet/minecraft/world/storage/ISaveHandler;Ljava/lang/String;Lnet/minecraft/world/WorldProvider;Lnet/minecraft/world/WorldSettings;Lnet/minecraft/profiler/Profiler;Lnet/minecraft/logging/ILogAgent;)V";
+
+		for(MethodNode m : cn.methods)
+		{
+			if("<init>".equals(m.name) && sig.equals(m.desc))
+			{
+				return bytes;
+			}
+		}
 		
 		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
 		cn.accept(cw);
@@ -83,7 +92,6 @@ public class PCCASMTransformer implements IClassTransformer
 						WorldProvider provider, WorldSettings worldSettings,
 						Profiler theProfiler, ILogAgent worldLogAgent)
 		 **/
-		String sig = "(Lnet/minecraft/world/storage/ISaveHandler;Ljava/lang/String;Lnet/minecraft/world/WorldProvider;Lnet/minecraft/world/WorldSettings;Lnet/minecraft/profiler/Profiler;Lnet/minecraft/logging/ILogAgent;)V";
 		cw.newMethod(name, "<init>", sig, true);
 		MethodVisitor mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "<init>", sig, null, null);
 		mv.visitCode();
@@ -130,10 +138,11 @@ public class PCCASMTransformer implements IClassTransformer
 		name = name.replace('.', '/');
 		ClassNode cn = new ClassNode(Opcodes.ASM4);
 		cr.accept(cn, ClassReader.EXPAND_FRAMES);
+		String sig = "(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/world/storage/ISaveHandler;Ljava/lang/String;Lnet/minecraft/world/WorldProvider;Lnet/minecraft/world/WorldSettings;Lnet/minecraft/profiler/Profiler;Lnet/minecraft/logging/ILogAgent;)V";
 
 		for(MethodNode m : cn.methods)
 		{
-			if("<init>".equals(m.name) && "(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/world/storage/ISaveHandler;Ljava/lang/String;Lnet/minecraft/world/WorldProvider;Lnet/minecraft/world/WorldSettings;Lnet/minecraft/profiler/Profiler;Lnet/minecraft/logging/ILogAgent;)V".equals(m.desc))
+			if("<init>".equals(m.name) && sig.equals(m.desc))
 			{
 				return bytes;
 			}
@@ -147,7 +156,6 @@ public class PCCASMTransformer implements IClassTransformer
 						WorldProvider provider, WorldSettings worldSettings,
 						Profiler theProfiler, ILogAgent worldLogAgent)
 		 **/
-		String sig = "(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/world/storage/ISaveHandler;Ljava/lang/String;Lnet/minecraft/world/WorldProvider;Lnet/minecraft/world/WorldSettings;Lnet/minecraft/profiler/Profiler;Lnet/minecraft/logging/ILogAgent;)V";
 		cw.newMethod(name, "<init>", sig, true);
 		MethodVisitor mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "<init>", sig, null, null);
 		mv.visitCode();
