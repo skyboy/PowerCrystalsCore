@@ -36,7 +36,7 @@
 
 	<condition property="have-apis">
 		<and>
-			<available file="${download.dir}/buildcraft-api.zip"/>
+			<available file="${mcpsrc.dir}/buildcraft" type="dir"/>
 		</and>
 	</condition>
 	
@@ -56,7 +56,7 @@
 		<get src="https://github.com/BuildCraft/BuildCraft/archive/3e13bbb166568624cc918f8a9f916fa2062f6c37.zip" dest="${download.dir}/buildcraft-api.zip"/>
 	</target>
 
-	<target name="extract-dependencies" depends="setup-forge,get-dependencies">
+	<target name="extract-dependencies" depends="setup-forge,get-dependencies" unless="${have-apis}">
 		<echo message="Extracting BuildCraft API..." />
 		<unzip src="${download.dir}/buildcraft-api.zip" dest="${download.dir}"/>
 		<mkdir dir="${mcpsrc.dir}/buildcraft/" />
