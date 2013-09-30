@@ -135,7 +135,7 @@ public class PCCASMTransformer implements IClassTransformer
 		}
 		else
 		{
-			names = new String[]{"mcServer","theEntityTracker","thePlayerManager","field_85177_Q"};
+			names = new String[]{"mcServer","theEntityTracker","thePlayerManager","worldTeleporter"};
 		}
 		name = name.replace('.', '/');
 		ClassNode cn = new ClassNode(Opcodes.ASM4);
@@ -172,7 +172,7 @@ public class PCCASMTransformer implements IClassTransformer
 		mv.visitVarInsn(Opcodes.ALOAD, 5);
 		mv.visitVarInsn(Opcodes.ALOAD, 6);
 		mv.visitVarInsn(Opcodes.ALOAD, 7);
-		// [World] super(saveHandler, par2String, provider, par4WorldSettings, theProfiler, worldLogAgent);
+		// [World] super(saveHandler, worldName, provider, worldSettings, theProfiler, worldLogAgent);
 		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "net/minecraft/world/World", "<init>", "(Lnet/minecraft/world/storage/ISaveHandler;Ljava/lang/String;Lnet/minecraft/world/WorldProvider;Lnet/minecraft/world/WorldSettings;Lnet/minecraft/profiler/Profiler;Lnet/minecraft/logging/ILogAgent;)V");
 		mv.visitVarInsn(Opcodes.ALOAD, 1);
 		mv.visitFieldInsn(Opcodes.PUTFIELD, name, names[0], "Lnet/minecraft/server/MinecraftServer;");
