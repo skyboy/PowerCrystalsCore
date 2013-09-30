@@ -33,6 +33,7 @@ public class ItemIdentifier
 		return ii;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static ItemIdentifier fromLiquidStack(LiquidStack stack)
 	{
 		ItemIdentifier ii = new ItemIdentifier();

@@ -1,7 +1,6 @@
 package powercrystals.core.asm;
 
-import cpw.mods.fml.relauncher.FMLRelauncher;
-import cpw.mods.fml.relauncher.IClassTransformer;
+import net.minecraft.launchwrapper.IClassTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +21,6 @@ public class PCCASMTransformer implements IClassTransformer
 {
 	private String desc;
 	private ArrayList<String> workingPath = new ArrayList<String>();
-	private boolean isClient = FMLRelauncher.side().equals("CLIENT");
 
 	public PCCASMTransformer()
 	{
@@ -53,7 +51,7 @@ public class PCCASMTransformer implements IClassTransformer
 		{
 			bytes = writeWorldServer(name, transformedName, bytes, cr);
 		}
-		else if (!isClient && "net.minecraft.world.World".equals(transformedName))
+		else if ("net.minecraft.world.World".equals(transformedName))
 		{
 			bytes = writeWorld(name, transformedName, bytes, cr);
 		}

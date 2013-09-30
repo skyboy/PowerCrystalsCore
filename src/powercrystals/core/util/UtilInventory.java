@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import buildcraft.api.transport.IPipeEntry;
+import buildcraft.api.transport.IPipeTile;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
@@ -22,29 +22,29 @@ public abstract class UtilInventory
 {
 	/**
 	 * Searches from position x, y, z, checking for BC-compatible pipes in all directions.
-	 * @return Map<ForgeDirection, IPipeEntry> specifying all found pipes and their directions.
+	 * @return Map<ForgeDirection, IPipeTile> specifying all found pipes and their directions.
 	 */
-	public static Map<ForgeDirection, IPipeEntry> findPipes(World world, int x, int y, int z)
+	public static Map<ForgeDirection, IPipeTile> findPipes(World world, int x, int y, int z)
 	{
 		return findPipes(world, x, y, z, ForgeDirection.VALID_DIRECTIONS);
 	}
 	
 	/**
 	 * Searches from position x, y, z, checking for BC-compatible pipes in each directiontocheck.
-	 * @return Map<ForgeDirection, IPipeEntry> specifying all found pipes and their directions.
+	 * @return Map<ForgeDirection, IPipeTile> specifying all found pipes and their directions.
 	 */
-	public static Map<ForgeDirection, IPipeEntry> findPipes(World world, int x, int y, int z, ForgeDirection[] directionstocheck)
+	public static Map<ForgeDirection, IPipeTile> findPipes(World world, int x, int y, int z, ForgeDirection[] directionstocheck)
 	{
-		Map<ForgeDirection, IPipeEntry> pipes = new LinkedHashMap<ForgeDirection, IPipeEntry>();
+		Map<ForgeDirection, IPipeTile> pipes = new LinkedHashMap<ForgeDirection, IPipeTile>();
 		for(ForgeDirection direction : directionstocheck)
 		{
 			BlockPosition bp = new BlockPosition(x, y, z);
 			bp.orientation = direction;
 			bp.moveForwards(1);
 			TileEntity te = world.getBlockTileEntity(bp.x, bp.y, bp.z);
-			if(te instanceof IPipeEntry)
+			if(te instanceof IPipeTile)
 			{
-				pipes.put(direction, (IPipeEntry)te);
+				pipes.put(direction, (IPipeTile)te);
 			}
 		}
 		return pipes;
@@ -161,18 +161,25 @@ public abstract class UtilInventory
 		}
 		stack = stack.copy();		
 		// (1) Try to put stack in pipes that are in valid directions
-		for(Entry<ForgeDirection, IPipeEntry> pipe : findPipes(world, bp.x, bp.y, bp.z, dropdirections).entrySet())
+		for(Entry<ForgeDirection, IPipeTile> pipe : findPipes(world, bp.x, bp.y, bp.z, dropdirections).entrySet())
 		{
-			if(pipe.getValue().acceptItems())
+			ForgeDirection from = pipe.getKey().getOpposite();
+			if(pipe.getValue().isPipeConnected(from))
 			{
-				pipe.getValue().entityEntering(stack.copy(), pipe.getKey());
-				return null;
+				if (pipe.getValue().injectItem(stack.copy(), false, from) > 0)
+				{
+					stack.stackSize -= pipe.getValue().injectItem(stack.copy(), true, from);
+					if (stack.stackSize <= 0)
+					{
+						return null;
+					}
+				}
 			}
 		}
 		// (2) Try to put stack in chests that are in valid directions
 		for(Entry<ForgeDirection, IInventory> chest : findChests(world, bp.x, bp.y, bp.z, dropdirections).entrySet())
 		{
-			IInventoryManager manager = InventoryManager.create((IInventory)chest.getValue(), chest.getKey().getOpposite());
+			IInventoryManager manager = InventoryManager.create(chest.getValue(), chest.getKey().getOpposite());
 			stack = manager.addItem(stack);
 			if(stack == null || stack.stackSize == 0)
 			{

@@ -44,6 +44,7 @@ public abstract class BaseMod implements IUpdateableMod
 		String langResourceBase = "/" + getConfigBaseFolder() + "/" + getModId().toLowerCase() + "/lang/";
 		for(String lang : languages)
 		{
+			@SuppressWarnings("resource")
 			InputStream is = this.getClass().getResourceAsStream(langResourceBase + lang + ".lang");
 			if(is == null)
 			{
@@ -69,6 +70,7 @@ public abstract class BaseMod implements IUpdateableMod
 		}
 	}
 	
+	@SuppressWarnings("resource")
 	protected void loadLang()
 	{
 		for(File langFile : _configFolder.listFiles(new FilenameFilter()

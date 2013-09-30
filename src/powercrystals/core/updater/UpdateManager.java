@@ -6,6 +6,7 @@ import java.util.EnumSet;
 import powercrystals.core.CoreCore;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChatMessageComponent;
 import cpw.mods.fml.common.IScheduledTickHandler;
 import cpw.mods.fml.common.TickType;
 
@@ -39,8 +40,8 @@ public class UpdateManager implements IScheduledTickHandler
 			if(_updateThread.newVersionAvailable())
 			{
 				EntityPlayer player = (EntityPlayer) tickData[0];
-				player.sendChatToPlayer("[" + _mod.getModName() + "] A new version is available: " + _updateThread.newVersion().modVersion().toString());
-				player.sendChatToPlayer( _updateThread.newVersion().description());
+				player.sendChatToPlayer(new ChatMessageComponent().addText("[" + _mod.getModName() + "] A new version is available: " + _updateThread.newVersion().modVersion().toString()));
+				player.sendChatToPlayer(new ChatMessageComponent().addText(_updateThread.newVersion().description()));
 			}
 		}
 	}

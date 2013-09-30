@@ -4,7 +4,7 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -98,7 +98,7 @@ public class BlockFluidClassic extends BlockFluidRoot
 	}
 
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving living, ItemStack theItem)
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase living, ItemStack theItem)
 	{
 		world.setBlock(x, y, z, blockID, quantaPerBlock - 1, 3);
 	}

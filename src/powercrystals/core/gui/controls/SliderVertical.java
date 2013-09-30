@@ -1,6 +1,7 @@
 package powercrystals.core.gui.controls;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -50,15 +51,15 @@ public abstract class SliderVertical extends Control
 		
 		if(enabled && isPointInBounds(mouseX, mouseY))
 		{
-			containerScreen.mc.renderEngine.bindTexture("/powercrystals/core/textures/button_hover.png");
+			containerScreen.mc.renderEngine.bindTexture(new ResourceLocation("/powercrystals/core/textures/button_hover.png"));
 		}
 		else if(enabled)
 		{
-			containerScreen.mc.renderEngine.bindTexture("/powercrystals/core/textures/button_enabled.png");
+			containerScreen.mc.renderEngine.bindTexture(new ResourceLocation("/powercrystals/core/textures/button_enabled.png"));
 		}
 		else
 		{
-			containerScreen.mc.renderEngine.bindTexture("/powercrystals/core/textures/button_disabled.png");
+			containerScreen.mc.renderEngine.bindTexture(new ResourceLocation("/powercrystals/core/textures/button_disabled.png"));
 		}
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GuiRender.drawTexturedModalRect(sliderX,                   sliderY,                    0,                     0,                      sliderWidth / 2, sliderHeight / 2);

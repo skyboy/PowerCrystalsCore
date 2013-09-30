@@ -3,6 +3,7 @@ package powercrystals.core.gui.controls;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.util.ResourceLocation;
 import powercrystals.core.gui.Control;
 import powercrystals.core.gui.GuiRender;
 
@@ -26,15 +27,15 @@ public abstract class Button extends Control
 	{
 		if(enabled && isPointInBounds(mouseX, mouseY))
 		{
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, containerScreen.mc.renderEngine.getTexture("/powercrystals/core/textures/button_hover.png"));
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, containerScreen.mc.renderEngine.getTexture(new ResourceLocation("/powercrystals/core/textures/button_hover.png")).getGlTextureId());
 		}
 		else if(enabled)
 		{
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, containerScreen.mc.renderEngine.getTexture("/powercrystals/core/textures/button_enabled.png"));
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, containerScreen.mc.renderEngine.getTexture(new ResourceLocation("/powercrystals/core/textures/button_enabled.png")).getGlTextureId());
 		}
 		else
 		{
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, containerScreen.mc.renderEngine.getTexture("/powercrystals/core/textures/button_disabled.png"));
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, containerScreen.mc.renderEngine.getTexture(new ResourceLocation("/powercrystals/core/textures/button_disabled.png")).getGlTextureId());
 		}
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GuiRender.drawTexturedModalRect(x,             y,              0,               0,                width / 2, height / 2);

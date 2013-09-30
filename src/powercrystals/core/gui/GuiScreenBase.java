@@ -10,17 +10,18 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
+import net.minecraft.util.ResourceLocation;
 
 @SideOnly(Side.CLIENT)
 public abstract class GuiScreenBase extends GuiContainer
 {
 	protected List<Control> _controls = new LinkedList<Control>();
-	protected String _backgroundTexture;
+	protected ResourceLocation _backgroundTexture;
 
 	public GuiScreenBase(Container container, String backgroundTexture)
 	{
 		super(container);
-		_backgroundTexture = backgroundTexture;
+		_backgroundTexture = new ResourceLocation(backgroundTexture);
 	}
 	
 	protected void addControl(Control control)

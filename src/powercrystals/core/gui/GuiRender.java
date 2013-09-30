@@ -53,10 +53,10 @@ public class GuiRender
 			y2 = temp;
 		}
 
-		float a = (float)(color >> 24 & 255) / 255.0F;
-		float r = (float)(color >> 16 & 255) / 255.0F;
-		float g = (float)(color >> 8 & 255) / 255.0F;
-		float b = (float)(color & 255) / 255.0F;
+		float a = (color >> 24 & 255) / 255.0F;
+		float r = (color >> 16 & 255) / 255.0F;
+		float g = (color >> 8 & 255) / 255.0F;
+		float b = (color & 255) / 255.0F;
 		Tessellator tessellator = Tessellator.instance;
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -74,14 +74,14 @@ public class GuiRender
 
 	public static void drawGradientRect(int x1, int x2, int y1, int y2, int color1, int color2, int zLevel)
 	{
-		float a1 = (float)(color1 >> 24 & 255) / 255.0F;
-		float r1 = (float)(color1 >> 16 & 255) / 255.0F;
-		float g1 = (float)(color1 >> 8 & 255) / 255.0F;
-		float b1 = (float)(color1 & 255) / 255.0F;
-		float a2 = (float)(color2 >> 24 & 255) / 255.0F;
-		float r2 = (float)(color2 >> 16 & 255) / 255.0F;
-		float g2 = (float)(color2 >> 8 & 255) / 255.0F;
-		float b2 = (float)(color2 & 255) / 255.0F;
+		float a1 = (color1 >> 24 & 255) / 255.0F;
+		float r1 = (color1 >> 16 & 255) / 255.0F;
+		float g1 = (color1 >> 8 & 255) / 255.0F;
+		float b1 = (color1 & 255) / 255.0F;
+		float a2 = (color2 >> 24 & 255) / 255.0F;
+		float r2 = (color2 >> 16 & 255) / 255.0F;
+		float g2 = (color2 >> 8 & 255) / 255.0F;
+		float b2 = (color2 & 255) / 255.0F;
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_ALPHA_TEST);

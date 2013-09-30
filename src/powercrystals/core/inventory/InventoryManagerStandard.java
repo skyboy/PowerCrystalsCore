@@ -22,7 +22,7 @@ public class InventoryManagerStandard implements IInventoryManager
 	
 	protected boolean canAddItem(ItemStack stack, int slot)
 	{
-		return _inv.isStackValidForSlot(slot, stack);
+		return _inv.isItemValidForSlot(slot, stack);
 	}
 	
 	protected boolean canRemoveItem(ItemStack stack, int slot)
