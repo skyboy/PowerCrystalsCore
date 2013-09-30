@@ -74,10 +74,14 @@ public class PCCASMTransformer implements IClassTransformer
 		ClassNode cn = new ClassNode(Opcodes.ASM4);
 		cr.accept(cn, ClassReader.EXPAND_FRAMES);
 		String sig = "(Lnet/minecraft/world/storage/ISaveHandler;Ljava/lang/String;Lnet/minecraft/world/WorldProvider;Lnet/minecraft/world/WorldSettings;Lnet/minecraft/profiler/Profiler;Lnet/minecraft/logging/ILogAgent;)V";
+		String sigObf = "(Lamc;Ljava/lang/String;Laei;Lacd;Llv;Llp;)V";
 
 		for(MethodNode m : cn.methods)
 		{
-			if("<init>".equals(m.name) && sig.equals(m.desc))
+			/*
+			if ("<init>".equals(m.name))
+				System.out.println(m.name+m.desc);//*/
+			if("<init>".equals(m.name) && (sig.equals(m.desc) || sigObf.equals(m.desc)))
 			{
 				return bytes;
 			}
