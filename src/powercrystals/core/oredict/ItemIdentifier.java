@@ -1,7 +1,6 @@
 package powercrystals.core.oredict;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.liquids.LiquidStack;
 
 public class ItemIdentifier
 {
@@ -30,15 +29,6 @@ public class ItemIdentifier
 		ItemIdentifier ii = new ItemIdentifier();
 		ii.itemId = stack.itemID;
 		ii.itemMeta = stack.getItemDamage();
-		return ii;
-	}
-	
-	@SuppressWarnings("deprecation")
-	public static ItemIdentifier fromLiquidStack(LiquidStack stack)
-	{
-		ItemIdentifier ii = new ItemIdentifier();
-		ii.itemId = stack.itemID;
-		ii.itemMeta = stack.itemMeta;
 		return ii;
 	}
 }
