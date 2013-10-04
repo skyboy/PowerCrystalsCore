@@ -1,5 +1,7 @@
 package powercrystals.core.asm;
 
+import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
+
 import net.minecraft.launchwrapper.IClassTransformer;
 
 import java.util.ArrayList;
@@ -74,7 +76,13 @@ public class PCCASMTransformer implements IClassTransformer
 		ClassNode cn = new ClassNode(Opcodes.ASM4);
 		cr.accept(cn, ClassReader.EXPAND_FRAMES);
 		String sig = "(Lnet/minecraft/world/storage/ISaveHandler;Ljava/lang/String;Lnet/minecraft/world/WorldProvider;Lnet/minecraft/world/WorldSettings;Lnet/minecraft/profiler/Profiler;Lnet/minecraft/logging/ILogAgent;)V";
-		String sigObf = "(Lamc;Ljava/lang/String;Laei;Lacd;Llv;Llp;)V";
+		FMLDeobfuscatingRemapper remapper = FMLDeobfuscatingRemapper.INSTANCE;
+		String sigObf = "(L" + remapper.unmap("net/minecraft/world/storage/ISaveHandler") + ";" +
+						"Ljava/lang/String;" +
+						"L" + remapper.unmap("net/minecraft/world/WorldProvider") + ";" +
+						"L" + remapper.unmap("net/minecraft/world/WorldSettings") + ";" +
+						"L" + remapper.unmap("net/minecraft/profiler/Profiler") + ";" +
+						"L" + remapper.unmap("net/minecraft/logging/ILogAgent") + ";)V";
 
 		for(MethodNode m : cn.methods)
 		{
@@ -141,10 +149,18 @@ public class PCCASMTransformer implements IClassTransformer
 		ClassNode cn = new ClassNode(Opcodes.ASM4);
 		cr.accept(cn, ClassReader.EXPAND_FRAMES);
 		String sig = "(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/world/storage/ISaveHandler;Ljava/lang/String;Lnet/minecraft/world/WorldProvider;Lnet/minecraft/world/WorldSettings;Lnet/minecraft/profiler/Profiler;Lnet/minecraft/logging/ILogAgent;)V";
-
+		FMLDeobfuscatingRemapper remapper = FMLDeobfuscatingRemapper.INSTANCE;
+		String sigObf = "(L" + remapper.unmap("net/minecraft/server/MinecraftServer") + ";" +
+						"L" + remapper.unmap("net/minecraft/world/storage/ISaveHandler") + ";" +
+						"Ljava/lang/String;" +
+						"L" + remapper.unmap("net/minecraft/world/WorldProvider") + ";" +
+						"L" + remapper.unmap("net/minecraft/world/WorldSettings") + ";" +
+						"L" + remapper.unmap("net/minecraft/profiler/Profiler") + ";" +
+						"L" + remapper.unmap("net/minecraft/logging/ILogAgent") + ";)V";
+		
 		for(MethodNode m : cn.methods)
 		{
-			if("<init>".equals(m.name) && sig.equals(m.desc))
+			if("<init>".equals(m.name) && (sig.equals(m.desc) || sigObf.equals(m.desc)))
 			{
 				return bytes;
 			}
