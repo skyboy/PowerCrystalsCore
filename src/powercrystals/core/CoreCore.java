@@ -61,7 +61,10 @@ public class CoreCore extends DummyModContainer implements IUpdateableMod
 	@Subscribe
 	public void preInit(FMLPreInitializationEvent evt)
 	{
-		loadConfig(new File(evt.getModConfigurationDirectory().getAbsolutePath() + "/powercrystals/core/client.cfg"));
+		loadConfig(new File(evt.getModConfigurationDirectory().getAbsolutePath() +
+				"/powercrystals/core/client.cfg"));
+		loadServerConfig(new File(evt.getModConfigurationDirectory().getAbsolutePath() +
+				"/powercrystals/core/server.cfg"));
 	}
 	
 	@Subscribe
@@ -108,6 +111,14 @@ public class CoreCore extends DummyModContainer implements IUpdateableMod
 		
 		doUpdateCheck = c.get(Configuration.CATEGORY_GENERAL, "EnableUpdateCheck", true);
 		doUpdateCheck.comment = "Set to false to disable update checks for all Power Crystals' mods.";
+		
+		c.save();
+	}
+	
+	private void loadServerConfig(File f)
+	{
+		Configuration c = new Configuration(f);
+		c.load();
 		
 		doLivingDeath = c.get(Configuration.CATEGORY_GENERAL, "EnableGenericDeathMessage", true);
 		doLivingDeath.comment = "Set to true to display death messages for any named entity.";
