@@ -6,11 +6,14 @@ import java.util.Arrays;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
 import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.OreDictionary.OreRegisterEvent;
 import powercrystals.core.oredict.OreDictTracker;
@@ -32,6 +35,7 @@ public class CoreCore extends DummyModContainer implements IUpdateableMod
 	public static final String modName = "PowerCrystals Core";
 	
 	public static Property doUpdateCheck;
+	public static Property doLivingDeath;
 	
 	public static CoreCore instance;
 
@@ -57,7 +61,10 @@ public class CoreCore extends DummyModContainer implements IUpdateableMod
 	@Subscribe
 	public void preInit(FMLPreInitializationEvent evt)
 	{
-		loadConfig(new File(evt.getModConfigurationDirectory().getAbsolutePath() + "/powercrystals/core/client.cfg"));
+		loadConfig(new File(evt.getModConfigurationDirectory().getAbsolutePath() +
+				"/powercrystals/core/client.cfg"));
+		loadServerConfig(new File(evt.getModConfigurationDirectory().getAbsolutePath() +
+				"/powercrystals/core/server.cfg"));
 	}
 	
 	@Subscribe
@@ -80,6 +87,16 @@ public class CoreCore extends DummyModContainer implements IUpdateableMod
 	{
 		OreDictTracker.registerOreDictEntry(event.Ore, event.Name);
 	}
+
+	@ForgeSubscribe
+	public void onLivingDeathEvent(LivingDeathEvent event)
+	{
+		if (!doLivingDeath.getBoolean(true) || event.entity.worldObj.isRemote ||
+				!(event.entity instanceof EntityLiving) ||
+				!((EntityLiving)event.entityLiving).hasCustomNameTag()) return;
+		((WorldServer)event.entity.worldObj).getMinecraftServer().
+			getConfigurationManager().sendChatMsg(event.entityLiving.func_110142_aN().func_94546_b());
+	}
 	
 	@Subscribe
 	public void load(FMLInitializationEvent evt)
@@ -94,6 +111,17 @@ public class CoreCore extends DummyModContainer implements IUpdateableMod
 		
 		doUpdateCheck = c.get(Configuration.CATEGORY_GENERAL, "EnableUpdateCheck", true);
 		doUpdateCheck.comment = "Set to false to disable update checks for all Power Crystals' mods.";
+		
+		c.save();
+	}
+	
+	private void loadServerConfig(File f)
+	{
+		Configuration c = new Configuration(f);
+		c.load();
+		
+		doLivingDeath = c.get(Configuration.CATEGORY_GENERAL, "EnableGenericDeathMessage", true);
+		doLivingDeath.comment = "Set to true to display death messages for any named entity.";
 		
 		c.save();
 	}
