@@ -26,7 +26,7 @@ public class UpdateCheckThread extends Thread
 		_mod = mod;
 		if(releaseUrl == null)
 		{
-			releaseUrl = "https://raw.github.com/powercrystals/" + mod.getModId() + "/master/VERSION";
+			releaseUrl = "https://raw.github.com/skyboy/" + mod.getModId() + "/master/VERSION";
 		}
 		_releaseUrl = releaseUrl;
 	}
