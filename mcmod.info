@@ -1,23 +1,21 @@
 [
-{
-  "modid": "PowerCrystalsCore",
-  "name": "PowerCrystals Core",
-  "description": "Core functionality for Power Crystals' mods.",
-  "version": "1.0.1",
-  "mcversion": "1.4.6",
-  "url": "http://www.minecraftforum.net/topic/1629898-",
-  "updateUrl": "",
-  "authors": [
-    "PowerCrystals",
-	"AtomicStryker",
-	"skyboy026"
-  ],
-  "credits": "",
-  "logoFile": "",
-  "screenshots": [
-  ],
-  "parent":"",
-  "dependencies": [
-  ]
-}
+    {
+        "name": "PowerCrystals Core", 
+        "parent": "", 
+        "url": "http://www.minecraftforum.net/topic/1629898-", 
+        "logoFile": "", 
+        "updateUrl": "", 
+        "credits": "", 
+        "version": "1.1.7", 
+        "modid": "PowerCrystalsCore", 
+        "authors": [
+            "PowerCrystals", 
+            "AtomicStryker", 
+            "skyboy026"
+        ], 
+        "mcversion": "1.6.2", 
+        "screenshots": [], 
+        "dependencies": [], 
+        "description": "Core functionality for Power Crystals' mods."
+    }
 ]
