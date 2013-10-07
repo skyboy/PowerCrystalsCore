@@ -46,8 +46,10 @@ public class CoreCore extends DummyModContainer implements IUpdateableMod
 		md.modId = modId;
 		md.name = modName;
 		md.version = version.substring(version.indexOf('R') + 1);
-		md.authorList = Arrays.asList("PowerCrystals");
-		md.url = "http://www.minecraftforum.net/topic/1629898-";
+		md.authorList = Arrays.asList("PowerCrystals", 
+	            "AtomicStryker", 
+	            "skyboy026");
+		md.url = "http://minecraft.curseforge.com/mc-mods/powercrystalscore/";
 		md.description = "Core functionality for Power Crystals' mods.";
 	}
 	
