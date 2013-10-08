@@ -27,15 +27,15 @@ public abstract class Button extends Control
 	{
 		if(enabled && isPointInBounds(mouseX, mouseY))
 		{
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, containerScreen.mc.renderEngine.getTexture(new ResourceLocation("/powercrystals/core/textures/button_hover.png")).getGlTextureId());
+			containerScreen.mc.renderEngine.bindTexture(new ResourceLocation(Control.textureLocation + "button_hover.png"));
 		}
 		else if(enabled)
 		{
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, containerScreen.mc.renderEngine.getTexture(new ResourceLocation("/powercrystals/core/textures/button_enabled.png")).getGlTextureId());
+			containerScreen.mc.renderEngine.bindTexture(new ResourceLocation(Control.textureLocation + "button_enabled.png"));
 		}
 		else
 		{
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, containerScreen.mc.renderEngine.getTexture(new ResourceLocation("/powercrystals/core/textures/button_disabled.png")).getGlTextureId());
+			containerScreen.mc.renderEngine.bindTexture(new ResourceLocation(Control.textureLocation + "button_disabled.png"));
 		}
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GuiRender.drawTexturedModalRect(x,             y,              0,               0,                width / 2, height / 2);

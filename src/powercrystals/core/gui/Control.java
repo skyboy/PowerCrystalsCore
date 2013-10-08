@@ -7,6 +7,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 @SideOnly(Side.CLIENT)
 public abstract class Control
 {
+	public static final String textureLocation = "powercrystalscore:textures/gui/";
 	protected GuiContainer containerScreen;
 	protected int x;
 	protected int y;

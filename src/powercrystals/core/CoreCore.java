@@ -145,4 +145,23 @@ public class CoreCore extends DummyModContainer implements IUpdateableMod
 	{
 		return version;
 	}
+	
+	@Override
+	public File getSource()
+	{
+		return CoreLoader.pccLocation;
+	}
+
+    @Override
+    public Class<?> getCustomResourcePackClass()
+    {
+        try
+        {
+            return getSource().isDirectory() ? Class.forName("cpw.mods.fml.client.FMLFolderResourcePack", true, getClass().getClassLoader()) : Class.forName("cpw.mods.fml.client.FMLFileResourcePack",true, getClass().getClassLoader());
+        }
+        catch (ClassNotFoundException e)
+        {
+            return null;
+        }
+    }
 }
