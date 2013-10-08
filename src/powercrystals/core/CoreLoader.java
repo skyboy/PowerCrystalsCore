@@ -1,5 +1,6 @@
 package powercrystals.core;
 
+import java.io.File;
 import java.util.Map;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
@@ -9,6 +10,7 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
 public class CoreLoader implements IFMLLoadingPlugin
 {
 	public static boolean runtimeDeobfEnabled = true;
+	public static File pccLocation;
 	
 	@Override
 	public String[] getLibraryRequestClass()
@@ -38,5 +40,6 @@ public class CoreLoader implements IFMLLoadingPlugin
 	public void injectData(Map<String, Object> data)
 	{
 		runtimeDeobfEnabled = (Boolean)data.get("runtimeDeobfuscationEnabled");
+		pccLocation = (File)data.get("coremodLocation");
 	}
 }
