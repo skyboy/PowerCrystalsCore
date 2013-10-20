@@ -12,14 +12,9 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
-import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.VarInsnNode;
 
 import powercrystals.core.CoreLoader;
 import powercrystals.core.asm.relauncher.Implementable;
@@ -61,10 +56,6 @@ public class PCCASMTransformer implements IClassTransformer
 		else if ("net.minecraft.world.World".equals(transformedName))
 		{
 			bytes = writeWorld(name, transformedName, bytes, cr);
-		}
-		else if ("buildcraft.api.power.PowerHandler".equals(transformedName))
-		{
-			bytes = writePowerHandler(name, transformedName, bytes, cr);
 		}
 
 		return bytes;
@@ -212,52 +203,6 @@ public class PCCASMTransformer implements IClassTransformer
 		mv.visitEnd();
 		cw.visitEnd();
 		return cw.toByteArray();
-	}
-
-	private byte[] writePowerHandler(String name, String transformedName, byte[] bytes, ClassReader cr)
-	{
-		ClassNode cn = new ClassNode(Opcodes.ASM4);
-		cr.accept(cn, ClassReader.EXPAND_FRAMES);
-		MethodNode method = null;
-		
-		for(MethodNode m : cn.methods)
-		{
-			if("applyPerdition".equals(m.name) && "()V".equals(m.desc))
-			{
-				method = m;
-				break;
-			}
-		}
-		
-		if (method != null)
-		{
-			InsnList list = method.instructions;
-			for (int i = 0, n = list.size(); i < n; ++i)
-			{
-				AbstractInsnNode node = list.get(i);
-				if (node.getType() == AbstractInsnNode.FIELD_INSN)
-				{
-					if ("DEFAULT_PERDITION".equals(((FieldInsnNode)node).name) &&
-							"Lbuildcraft/api/power/PowerHandler$PerditionCalculator;".
-							equals(((FieldInsnNode)node).desc))
-					{
-						list.insertBefore(node, new VarInsnNode(Opcodes.ALOAD, 0));
-						list.insertBefore(node, new MethodInsnNode(Opcodes.INVOKEVIRTUAL,
-								"buildcraft/api/power/PowerHandler",
-								"getPerdition",
-								"()Lbuildcraft/api/power/PowerHandler$PerditionCalculator;"));
-						list.remove(node);
-						ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-						cn.accept(cw);
-						cw.visitEnd();
-						bytes = cw.toByteArray();
-						break;
-					}
-				}
-			}
-		}
-		
-		return bytes;
 	}
 
 	private boolean implement(ClassNode cn)
