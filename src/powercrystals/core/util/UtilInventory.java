@@ -1,11 +1,14 @@
 package powercrystals.core.util;
 
+import buildcraft.api.transport.IPipeTile;
+
+import cofh.api.transport.IItemConduit;
+
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import buildcraft.api.transport.IPipeTile;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,12 +19,42 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+
 import powercrystals.core.inventory.IInventoryManager;
 import powercrystals.core.inventory.InventoryManager;
 import powercrystals.core.position.BlockPosition;
 
 public abstract class UtilInventory
 {
+	/**
+	 * Searches from position x, y, z, checking for BC-compatible pipes in all directions.
+	 * @return Map<ForgeDirection, IPipeTile> specifying all found pipes and their directions.
+	 */
+	public static Map<ForgeDirection, IItemConduit> findConduits(World world, int x, int y, int z)
+	{
+		return findConduits(world, x, y, z, ForgeDirection.VALID_DIRECTIONS);
+	}
+	
+	/**
+	 * Searches from position x, y, z, checking for BC-compatible pipes in each directiontocheck.
+	 * @return Map<ForgeDirection, IPipeTile> specifying all found pipes and their directions.
+	 */
+	public static Map<ForgeDirection, IItemConduit> findConduits(World world, int x, int y, int z, ForgeDirection[] directionstocheck)
+	{
+		Map<ForgeDirection, IItemConduit> pipes = new LinkedHashMap<ForgeDirection, IItemConduit>();
+		for(ForgeDirection direction : directionstocheck)
+		{
+			BlockPosition bp = new BlockPosition(x, y, z);
+			bp.orientation = direction;
+			bp.moveForwards(1);
+			TileEntity te = world.getBlockTileEntity(bp.x, bp.y, bp.z);
+			if(te instanceof IItemConduit)
+			{
+				pipes.put(direction, (IItemConduit)te);
+			}
+		}
+		return pipes;
+	}
 	/**
 	 * Searches from position x, y, z, checking for BC-compatible pipes in all directions.
 	 * @return Map<ForgeDirection, IPipeTile> specifying all found pipes and their directions.
@@ -161,7 +194,17 @@ public abstract class UtilInventory
 		{
 			return stack;
 		}
-		stack = stack.copy();		
+		stack = stack.copy();
+		// (0.5) Try to put stack in conduits that are in valid directions
+		for(Entry<ForgeDirection, IItemConduit> pipe : findConduits(world, bp.x, bp.y, bp.z, dropdirections).entrySet())
+		{
+			ForgeDirection from = pipe.getKey().getOpposite();
+			stack = pipe.getValue().sendItems(stack, from);
+			if (stack == null || stack.stackSize <= 0)
+			{
+				return null;
+			}
+		}
 		// (1) Try to put stack in pipes that are in valid directions
 		for(Entry<ForgeDirection, IPipeTile> pipe : findPipes(world, bp.x, bp.y, bp.z, dropdirections).entrySet())
 		{

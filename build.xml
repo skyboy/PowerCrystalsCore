@@ -55,6 +55,9 @@
 	<target name="get-dependencies" depends="get-version" unless="${have-apis}">
 		<echo message="Downloading BuildCraft API..." />
 		<get src="https://github.com/BuildCraft/BuildCraft/archive/3e13bbb166568624cc918f8a9f916fa2062f6c37.zip" dest="${download.dir}/buildcraft-api.zip"/>
+
+		<echo message="Downloading ThermalExpansion API... " />
+		<get src="https://github.com/KingLemming/CoFHLib/archive/1848fb59f53f72dfd4b416ecfd89c26c1a9a80c5.zip" dest="${download.dir}/cofh-api.zip" />
 	</target>
 
 	<target name="extract-dependencies" depends="setup-forge,get-dependencies" unless="${have-apis}">
@@ -62,6 +65,11 @@
 		<unzip src="${download.dir}/buildcraft-api.zip" dest="${download.dir}"/>
 		<mkdir dir="${mcpsrc.dir}/buildcraft/" />
 		<move file="${download.dir}/BuildCraft-3e13bbb166568624cc918f8a9f916fa2062f6c37/common/buildcraft/api" todir="${mcpsrc.dir}/buildcraft/"/>
+
+		<echo message="Extracting ThermalExpansion API... " />
+		<unzip src="${download.dir}/cofh-api.zip" dest="${download.dir}" />
+		<mkdir dir="${mcpsrc.dir}/cofh" />
+		<move file="${download.dir}/CoFHLib-1848fb59f53f72dfd4b416ecfd89c26c1a9a80c5/cofh/api" todir="${mcpsrc.dir}/cofh" />
 	</target>
 	
 	
