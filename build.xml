@@ -38,6 +38,7 @@
 	<condition property="have-apis">
 		<and>
 			<available file="${mcpsrc.dir}/buildcraft" type="dir"/>
+			<available file="${mcpsrc.dir}/cofh" type="dir"/>
 		</and>
 	</condition>
 	
