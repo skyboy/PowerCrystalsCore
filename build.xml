@@ -112,6 +112,12 @@
 	</condition>
 
 	<target name="install" depends="build">
+		<antcall target="install-lite" />
+		<delete dir="${mcp.dir}/reobf" />
+		<delete dir="${mcpsrc.dir}/powercrystals/core" />
+	</target>
+
+	<target name="install-lite">
 		<manifest file="MANIFEST.MF" mode="update">
 			<attribute name="FMLCorePlugin" value="powercrystals.core.CoreLoader" />
 			<attribute name="MCVersion" value="${build.ver}" />
@@ -119,8 +125,6 @@
 		</manifest>
 		<jar destfile="${dist.dir}/PowerCrystalsCore-${python.out}-${build.number}.jar" basedir="${classes.dir}" manifest="MANIFEST.MF" />
 		<delete dir="${classes.dir}" />
-		<delete dir="${mcp.dir}/reobf"/>
-		<delete dir="${mcpsrc.dir}/powercrystals/core" />
 	</target>
 
 	<target name="build" depends="extract-dependencies" unless="already-compiled">
@@ -132,14 +136,19 @@
 			classpathref="mcp.classpath" debug="true" debuglevel="lines,source" includeAntRuntime="false">
 			<include name="powercrystals/core/**/*.java"/>
 		</javac>
-		<!--<exec dir="${mcp.dir}" executable="${windows.python}"
-			osfamily="windows" failonerror="true">
-			<arg line="runtime/recompile.py" />
-		</exec>
-
-		<exec dir="${mcp.dir}" executable="sh" osfamily="unix">
-			<arg value="recompile.sh" />
-		</exec>-->
+		
+		<!-- Dev jar -->
+		<copy todir="${classes.dir}">
+			<fileset dir="${mcp.dir}/bin/minecraft">
+				<include name="powercrystals/core/**/*.class" />
+				<include name="cofh/**/*.class" />
+			</fileset>
+		</copy>
+		
+		<antcall target="copy-assets" />
+		<antcall target="install-lite">
+			<param name="build.number" value="dev-${build.number}" />
+		</antcall>
 
 		<!-- Reobf -->
 		<exec dir="${mcp.dir}" executable="cmd" osfamily="windows">
@@ -155,6 +164,12 @@
 		<copy todir="${classes.dir}">
 			<fileset dir="${mcp.dir}/reobf/minecraft"/>
 		</copy>
+		<antcall target="copy-assets" />
+	</target>
+	
+	<target name="copy-assets">
+		<copy todir="${classes.dir}" file="mcmod.info"/>
+		
 		<copy todir="${classes.dir}" file="${mcpsrc.dir}/pcc_at.cfg" overwrite="true"/>
 		
 		<copy todir="${classes.dir}/assets/powercrystalscore/textures">
