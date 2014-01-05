@@ -127,6 +127,16 @@ public abstract class UtilInventory
 				}
 			}
 		}
+		else if(world.getBlockId(chestloc.x, chestloc.y, chestloc.z) == Block.chestTrapped.blockID)
+		{
+			for(BlockPosition bp : chestloc.getAdjacent(false))
+			{
+				if(world.getBlockId(bp.x, bp.y, bp.z) == Block.chestTrapped.blockID)
+				{
+					return new InventoryLargeChest("Large Chest", ((IInventory)te), ((IInventory)world.getBlockTileEntity(bp.x, bp.y, bp.z)));
+				}
+			}
+		}
 		return ((IInventory)te);
 	}
 	
@@ -190,7 +200,7 @@ public abstract class UtilInventory
 	public static ItemStack dropStack(World world, BlockPosition bp, ItemStack stack, ForgeDirection[] dropdirections, ForgeDirection airdropdirection)
 	{
 		// (0) Sanity check. Don't bother dropping if there's nothing to drop, and never try to drop items on the client.
-		if(stack == null || stack.stackSize == 0 || world.isRemote || stack.getItem() == null)
+		if (world.isRemote | stack == null || stack.stackSize == 0 || stack.getItem() == null)
 		{
 			return stack;
 		}
