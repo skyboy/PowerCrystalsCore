@@ -1,10 +1,19 @@
 package powercrystals.core;
 
-import java.io.File;
-import java.util.Arrays;
-
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import cpw.mods.fml.common.DummyModContainer;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.LoadController;
+import cpw.mods.fml.common.ModMetadata;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
+
+import java.io.File;
+import java.util.Arrays;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
@@ -16,17 +25,12 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.OreDictionary.OreRegisterEvent;
+
+import powercrystals.core.net.ClientProxy;
+import powercrystals.core.net.CommonProxy;
 import powercrystals.core.oredict.OreDictTracker;
 import powercrystals.core.updater.IUpdateableMod;
 import powercrystals.core.updater.UpdateManager;
-
-import cpw.mods.fml.common.DummyModContainer;
-import cpw.mods.fml.common.LoadController;
-import cpw.mods.fml.common.ModMetadata;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
 
 public class CoreCore extends DummyModContainer implements IUpdateableMod
 {
@@ -36,8 +40,10 @@ public class CoreCore extends DummyModContainer implements IUpdateableMod
 	
 	public static Property doUpdateCheck;
 	public static Property doLivingDeath;
+	public static Property doParticles;
 	
 	public static CoreCore instance;
+	public static CommonProxy proxy;
 
 	public CoreCore()
 	{
@@ -67,6 +73,10 @@ public class CoreCore extends DummyModContainer implements IUpdateableMod
 				"/powercrystals/core/client.cfg"));
 		loadServerConfig(new File(evt.getModConfigurationDirectory().getAbsolutePath() +
 				"/powercrystals/core/server.cfg"));
+		if (FMLCommonHandler.instance().getSide().isClient())
+			proxy = new ClientProxy();
+		else
+			proxy = new CommonProxy();
 	}
 	
 	@Subscribe
@@ -82,6 +92,13 @@ public class CoreCore extends DummyModContainer implements IUpdateableMod
 		
 		instance = this;
 		MinecraftForge.EVENT_BUS.register(instance);
+	}
+	
+	@Subscribe
+	public void load(FMLPostInitializationEvent evt)
+	{
+		TickRegistry.registerScheduledTickHandler(new UpdateManager(this), Side.CLIENT);
+		proxy.overrideParticleRenderer();
 	}
 
 	@ForgeSubscribe
@@ -100,12 +117,6 @@ public class CoreCore extends DummyModContainer implements IUpdateableMod
 			getConfigurationManager().sendChatMsg(event.entityLiving.func_110142_aN().func_94546_b());
 	}
 	
-	@Subscribe
-	public void load(FMLInitializationEvent evt)
-	{
-		TickRegistry.registerScheduledTickHandler(new UpdateManager(this), Side.CLIENT);
-	}
-	
 	private void loadConfig(File f)
 	{
 		Configuration c = new Configuration(f);
@@ -113,6 +124,8 @@ public class CoreCore extends DummyModContainer implements IUpdateableMod
 		
 		doUpdateCheck = c.get(Configuration.CATEGORY_GENERAL, "EnableUpdateCheck", true);
 		doUpdateCheck.comment = "Set to false to disable update checks for all Power Crystals' mods.";
+		doParticles = c.get(Configuration.CATEGORY_GENERAL, "EnableParticles", true);
+		doParticles.comment = "Set to false to disable any particles from spawning in minecraft.";
 		
 		c.save();
 	}

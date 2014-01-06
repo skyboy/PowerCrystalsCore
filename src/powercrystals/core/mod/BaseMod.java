@@ -1,8 +1,9 @@
 package powercrystals.core.mod;
 
+import cpw.mods.fml.common.registry.LanguageRegistry;
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -12,8 +13,6 @@ import java.io.OutputStream;
 import java.util.Properties;
 
 import powercrystals.core.updater.IUpdateableMod;
-
-import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public abstract class BaseMod implements IUpdateableMod
 {
@@ -40,7 +39,7 @@ public abstract class BaseMod implements IUpdateableMod
 	}
 	
 	protected void extractLang(String[] languages)
-	{
+	{// TODO: move into assets
 		String langResourceBase = "/" + getConfigBaseFolder() + "/" + getModId().toLowerCase() + "/lang/";
 		for(String lang : languages)
 		{
@@ -70,7 +69,6 @@ public abstract class BaseMod implements IUpdateableMod
 		}
 	}
 	
-	@SuppressWarnings("resource")
 	protected void loadLang()
 	{
 		for(File langFile : _configFolder.listFiles(new FilenameFilter()
@@ -78,24 +76,33 @@ public abstract class BaseMod implements IUpdateableMod
 			@Override
 			public boolean accept(File dir, String name)
 			{
-				return name.endsWith(".lang");
+				return name != null && name.endsWith(".lang");
 			}
 		}))
 		{
+			InputStreamReader is = null;
 			try
 			{
 				Properties langPack = new Properties();
-				langPack.load(new InputStreamReader(new FileInputStream(langFile), "UTF-8"));
+				is = new InputStreamReader(new FileInputStream(langFile), "UTF-8");
+				langPack.load(is);
 				String lang = langFile.getName().replace(".lang", "");
 				LanguageRegistry.instance().addStringLocalization(langPack, lang);
 			}
-			catch(FileNotFoundException x)
+			catch(Throwable x)
 			{
 				x.printStackTrace();
 			}
-			catch(IOException x)
+			finally
 			{
-				x.printStackTrace();
+				try
+				{
+					is.close();
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 	}
