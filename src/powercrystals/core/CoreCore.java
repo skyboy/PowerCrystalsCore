@@ -34,7 +34,7 @@ import powercrystals.core.updater.UpdateManager;
 
 public class CoreCore extends DummyModContainer implements IUpdateableMod
 {
-	public static final String version = "1.6.2R1.1.8";
+	public static final String version = "1.6.2R1.1.9B1";
 	public static final String modId = "PowerCrystalsCore";
 	public static final String modName = "PowerCrystals Core";
 	
